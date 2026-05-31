@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdrianSHOP - Tu tienda gaming</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#121212;--surface2:#1a1a1a;--border:#2a2a2a;--text:#f0f0f0;--muted:#888;--accent:#CCFF00;--danger:#ff4444;--success:#44cc44}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+a{color:var(--accent)}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit;font-size:inherit}
+
+/* Layout */
+.container{max-width:1200px;margin:0 auto;padding:0 1rem}
+.navbar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.navbar-inner{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;max-width:1200px;margin:0 auto}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);cursor:pointer}
+.nav-links{display:flex;align-items:center;gap:1rem}
+.nav-links a{color:var(--muted);font-size:.9rem;text-decoration:none}
+.nav-links a:hover{color:var(--text)}
+.cart-badge{background:var(--accent);color:#000;font-size:.7rem;font-weight:700;padding:.15rem .4rem}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border:2px solid var(--border);font-size:.9rem;font-weight:600;transition:all .2s;cursor:pointer;text-decoration:none;background:var(--surface2);color:var(--text)}
+.btn-primary{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-sm{padding:.4rem .8rem;font-size:.8rem}
+.btn-lg{padding:.8rem 1.6rem;font-size:1rem}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* Cards & Grid */
+.card{background:var(--surface);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+
+/* Product card */
+.pcard{background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:border-color .2s}
+.pcard:hover{border-color:var(--accent)}
+.pcard img{width:100%;height:180px;object-fit:cover;display:block;background:var(--surface2)}
+.pcard-body{padding:1rem}
+.pcard-title{font-size:1rem;font-weight:700}
+.pcard-cat{font-size:.75rem;color:var(--accent);text-transform:uppercase;font-weight:600}
+.pcard-price{font-size:1.2rem;font-weight:800;color:var(--accent);margin:.5rem 0}
+.pcard-desc{font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Categories */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.cat-card{background:var(--surface);border:1px solid var(--border);padding:1.2rem;text-align:center;cursor:pointer;transition:border-color .2s}
+.cat-card:hover{border-color:var(--accent)}
+.cat-icon{font-size:2rem;display:block;margin-bottom:.5rem}
+.cat-name{font-size:.9rem;font-weight:600}
+
+/* Forms */
+.input{width:100%;padding:.6rem .8rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:.9rem;outline:none;margin-bottom:.8rem}
+.input:focus{border-color:var(--accent)}
+.label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.3rem;color:var(--muted)}
+.form-group{margin-bottom:.8rem}
+
+/* Auth */
+.auth-box{max-width:400px;margin:3rem auto;padding:2rem;background:var(--surface);border:1px solid var(--border)}
+.auth-box h1{text-align:center;font-size:1.5rem;margin-bottom:1.5rem}
+.auth-box .btn{width:100%;justify-content:center}
+.auth-footer{text-align:center;margin-top:1rem;font-size:.85rem;color:var(--muted)}
+
+/* Cart */
+.citem{display:flex;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border)}
+.citem img{width:60px;height:60px;object-fit:cover;background:var(--surface2)}
+.citem-info{flex:1}
+.citem-title{font-weight:600;font-size:.95rem}
+.citem-price{color:var(--accent);font-weight:700}
+.cqty{display:flex;align-items:center;gap:.5rem}
+.cqty button{width:30px;height:30px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:1rem}
+
+/* OTP */
+.otp-box{display:flex;gap:.5rem;justify-content:center;margin:1.5rem 0}
+.otp-inp{width:48px;height:56px;text-align:center;font-size:1.3rem;font-weight:700;background:var(--surface2);border:2px solid var(--border);color:var(--text);outline:none}
+.otp-inp:focus{border-color:var(--accent)}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.modal{background:var(--surface);border:1px solid var(--border);width:100%;max-width:500px;padding:1.5rem}
+.modal h2{margin-bottom:1rem}
+
+/* Admin */
+.admin-layout{display:grid;grid-template-columns:200px 1fr;gap:1.5rem;padding:1.5rem 0}
+.admin-sidebar{display:flex;flex-direction:column;gap:.3rem}
+.admin-sidebar button{text-align:left;padding:.6rem .8rem;background:transparent;border:none;color:var(--muted);font-size:.9rem;font-weight:500}
+.admin-sidebar button:hover,.admin-sidebar button.active{background:var(--surface);color:var(--accent)}
+
+/* Page */
+.page{padding:2rem 0}
+.page h1{font-size:1.8rem;font-weight:800;margin-bottom:1rem}
+.section{padding:3rem 0}
+.section-title{font-size:1.3rem;font-weight:700;margin-bottom:1.5rem}
+
+/* Hero */
+.hero{padding:4rem 0;text-align:center;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2.5rem;font-weight:900}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:1.1rem;color:var(--muted);margin-bottom:1.5rem;max-width:600px;margin-inline:auto}
+.hero-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);padding:2rem 0;text-align:center;color:var(--muted);font-size:.85rem;margin-top:4rem}
+
+/* Tabs */
+.tabs{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1rem}
+.tab{background:var(--surface2);border:1px solid var(--border);padding:.4rem .8rem;font-size:.8rem;color:var(--muted);cursor:pointer}
+.tab.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.price-big{font-size:2rem;font-weight:900;color:var(--accent);margin:1rem 0}
+
+@media(max-width:768px){
+  .detail-grid{grid-template-columns:1fr}
+  .admin-layout{grid-template-columns:1fr}
+  .hero h1{font-size:1.8rem}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ===================== DATA STORE =====================
+const Store = {
+  _users: JSON.parse(localStorage.getItem('as_users') || 'null') || [
+    {id:'admin-1',name:'Adrian',email:'admin@adrianshop.com',pass:'Admin2026',admin:true,verified:true}
+  ],
+  _session: JSON.parse(localStorage.getItem('as_session') || 'null'),
+  _cart: JSON.parse(localStorage.getItem('as_cart') || '[]'),
+  _orders: JSON.parse(localStorage.getItem('as_orders') || '[]'),
+
+  get users(){return this._users},
+  set users(v){this._users=v;localStorage.setItem('as_users',JSON.stringify(v))},
+  get session(){return this._session},
+  set session(v){this._session=v;if(v)localStorage.setItem('as_session',JSON.stringify(v));else localStorage.removeItem('as_session')},
+  get cart(){return this._cart},
+  set cart(v){this._cart=v;localStorage.setItem('as_cart',JSON.stringify(v))},
+  get orders(){return this._orders},
+  set orders(v){this._orders=v;localStorage.setItem('as_orders',JSON.stringify(v))},
+
+  categories:[
+    {id:'c1',name:'Cuentas de Juegos',icon:'🎮'},
+    {id:'c2',name:'Monedas Virtuales',icon:'💰'},
+    {id:'c3',name:'Skins y Cosméticos',icon:'🎨'},
+    {id:'c4',name:'Boosting',icon:'⚡'},
+    {id:'c5',name:'Streaming',icon:'📺'}
+  ],
+  products:[
+    {id:'p1',name:'Cuenta Fortnite (Battle Pass)',cat:'c1',price:25,desc:'Battle pass completo + 50 skins. Email incluido.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=🎮+Fortnite'},
+    {id:'p2',name:'Cuenta Valorant (Radiante)',cat:'c1',price:35,desc:'Rango Radiante con skins exclusivas.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=🎮+Valorant'},
+    {id:'p3',name:'Cuenta League of Legends',cat:'c1',price:20,desc:'100+ skins, todos los campeones.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=🎮+LoL'},
+    {id:'p4',name:'10.000 V-Bucks',cat:'c2',price:15,desc:'Código digital directo para Fortnite.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=💰+V-Bucks'},
+    {id:'p5',name:'1.000 Robux',cat:'c2',price:12,desc:'Para Roblox. Entrega inmediata.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=💰+Robux'},
+    {id:'p6',name:'Paquete Skins CS:GO',cat:'c3',price:40,desc:'5 skins aleatorias de alta calidad.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=🎨+CS:GO'},
+    {id:'p7',name:'Skin Legendaria LoL',cat:'c3',price:18,desc:'Skin legendaria a elegir entre 20.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=🎨+LoL+Skin'},
+    {id:'p8',name:'Boosting Bronce→Oro',cat:'c4',price:30,desc:'Subida a Oro en 7 días. Duo incluido.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=⚡+Boosting'},
+    {id:'p9',name:'Cuenta Netflix (1 año)',cat:'c5',price:10,desc:'4K. Perfil propio. Garantía 1 año.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=📺+Netflix'},
+    {id:'p10',name:'Cuenta Spotify Premium',cat:'c5',price:8,desc:'Sin anuncios, descargas. 1 año.',img:'https://placehold.co/400x300/1a1a1a/CCFF00?text=📺+Spotify'}
+  ],
+
+  catName(id){return this.categories.find(c=>c.id===id)?.name||''},
+  catIcon(id){return this.categories.find(c=>c.id===id)?.icon||''},
+  product(id){return this.products.find(p=>p.id===id)},
+  cartTotal(){return this.cart.reduce((s,i)=>s+i.price*i.qty,0)},
+  cartCount(){return this.cart.reduce((s,i)=>s+i.qty,0)},
+  addCart(product){const e=this.cart.find(i=>i.id===product.id);if(e)e.qty++;else this.cart.push({...product,qty:1});this.cart=[...this.cart];this.render()},
+  removeCart(id){this.cart=this.cart.filter(i=>i.id!==id);this.render()},
+  qtyCart(id,d){const i=this.cart.find(x=>x.id===id);if(!i)return;i.qty+=d;if(i.qty<1)this.removeCart(id);else{this.cart=[...this.cart];this.render()}},
+  clearCart(){this.cart=[];this.render()},
+
+  locations:['IES Virgen del Carmen (Jaén)','IES Los Cerros (Jaén)','IES Jabalcuz (Jaén)','IES Fuente de la Peña (Jaén)','Plaza de la Constitución (Jaén)','Estación de Tren (Jaén)'],
+
+  toast(msg,type='info'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;right:20px;padding:12px 20px;background:'+(type==='success'?'#44cc44':type==='error'?'#ff4444':'var(--surface)')+';color:#fff;border:1px solid var(--border);z-index:999;font-size:.9rem;animation:fadeIn .3s';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2500)},
+  notify(msg){this.toast(msg,'success')},
+  alert(msg){this.toast(msg,'error')},
+
+  render(){App.render()}
+};
+document.head.insertAdjacentHTML('beforeend','<style>@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}</style>');
+
+// ===================== APP =====================
+const App = {
+  _page:'home',
+  _adminTab:'products',
+  _catFilter:'all',
+  _detailId:null,
+  _cartOpen:false,
+  _formLogin:{email:'',pass:''},
+  _formReg:{name:'',email:'',pass:''},
+  _otpEmail:'',
+  _otpCode:['','','','','',''],
+  _checkout:{location:'',date:'',time:'',phone:'',notes:''},
+  _adminProductForm:{name:'',cat:'c1',price:'',desc:'',img:''},
+  _adminCatForm:{name:'',icon:''},
+  _adminModal:null,
+
+  init(){
+    document.getElementById('app').innerHTML = `
+      <nav class="navbar">
+        <div class="navbar-inner">
+          <div class="logo" onclick="App.go('home')">AdrianSHOP</div>
+          <div class="nav-links">
+            <a href="#" onclick="App.go('products')">Productos</a>
+            <a href="#" onclick="App.go('cart')">🛒${Store.cartCount()>0?' <span class=cart-badge>'+Store.cartCount()+'</span>':''}</a>
+            ${Store.session?`
+              <a href="#" onclick="App.go('account')">👤</a>
+              ${Store.session.admin?'<a href="#" onclick="App.go(\'admin\')">⚙️</a>':''}
+              <button class="btn btn-sm" onclick="App.logout()">Salir</button>
+            `:`
+              <a href="#" onclick="App.go('login')">Entrar</a>
+              <a href="#" onclick="App.go('register')" class="btn btn-primary btn-sm">Registro</a>
+            `}
+          </div>
+        </div>
+      </nav>
+      <main style="min-height:calc(100vh - 140px)"><div id="page-content"></div></main>
+      <footer class="footer"><div class="container"><p>© 2025 AdrianSHOP — Tu tienda gaming de confianza</p></div></footer>
+    `;
+    this.renderPage();
+  },
+
+  go(page,param){
+    this._page=page;
+    if(param)this._detailId=param;
+    this.render();
+  },
+
+  render(){
+    this.init();
+  },
+
+  renderPage(){
+    const el=document.getElementById('page-content');
+    if(!el)return;
+    switch(this._page){
+      case 'home':el.innerHTML=this.homeHTML();break;
+      case 'products':el.innerHTML=this.productsHTML();break;
+      case 'detail':el.innerHTML=this.detailHTML();break;
+      case 'cart':el.innerHTML=this.cartHTML();break;
+      case 'checkout':el.innerHTML=this.checkoutHTML();break;
+      case 'login':el.innerHTML=this.loginHTML();break;
+      case 'register':el.innerHTML=this.registerHTML();break;
+      case 'verify':el.innerHTML=this.verifyHTML();break;
+      case 'account':el.innerHTML=this.accountHTML();break;
+      case 'admin':el.innerHTML=this.adminHTML();break;
+      default:el.innerHTML=this.homeHTML();
+    }
+  },
+
+  homeHTML(){
+    const featured=Store.products.slice(0,4);
+    return `
+      <section class="hero">
+        <div class="container">
+          <h1>Bienvenido a <span>AdrianSHOP</span></h1>
+          <p>La tienda número 1 para cuentas de juegos, monedas virtuales, skins, boosting y cuentas de streaming.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-lg" onclick="App.go('products')">Ver productos</button>
+            <button class="btn btn-lg" onclick="App.go('register')">Crear cuenta</button>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <h2 class="section-title">Categorías</h2>
+          <div class="cat-grid">
+            ${Store.categories.map(c=>`<div class="cat-card" onclick="App._catFilter='${c.id}';App.go('products')"><span class="cat-icon">${c.icon}</span><span class="cat-name">${c.name}</span></div>`).join('')}
+          </div>
+        </div>
+      </section>
+      <section class="section" style="background:var(--surface)">
+        <div class="container">
+          <h2 class="section-title">Productos destacados</h2>
+          <div class="grid">${featured.map(p=>this.productCard(p)).join('')}</div>
+          <div style="text-align:center;margin-top:2rem"><button class="btn btn-primary" onclick="App.go('products')">Ver todos los productos</button></div>
+        </div>
+      </section>
+    `;
+  },
+
+  productCard(p){
+    return `<div class="pcard" onclick="App.go('detail','${p.id}')">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <div class="pcard-body">
+        <div class="pcard-cat">${Store.catName(p.cat)}</div>
+        <div class="pcard-title">${p.name}</div>
+        <div class="pcard-price">${p.price}€</div>
+        <div class="pcard-desc">${p.desc}</div>
+      </div>
+    </div>`;
+  },
+
+  productsHTML(){
+    const cats=Store.categories;
+    const filtered=this._catFilter==='all'?Store.products:Store.products.filter(p=>p.cat===this._catFilter);
+    return `<div class="container page">
+      <h1>Productos</h1>
+      <div class="tabs">
+        <button class="tab ${this._catFilter==='all'?'active':''}" onclick="App._catFilter='all';App.renderPage()">Todos</button>
+        ${cats.map(c=>`<button class="tab ${this._catFilter===c.id?'active':''}" onclick="App._catFilter='${c.id}';App.renderPage()">${c.icon} ${c.name}</button>`).join('')}
+      </div>
+      ${filtered.length===0?'<div class=empty><p>No hay productos</p></div>':`<div class="grid">${filtered.map(p=>this.productCard(p)).join('')}</div>`}
+    </div>`;
+  },
+
+  detailHTML(){
+    const p=Store.product(this._detailId);
+    if(!p)return '<div class=container page><div class=empty><p>Producto no encontrado</p><button class="btn btn-primary" onclick="App.go(\'products\')">Volver</button></div></div>';
+    return `<div class="container page">
+      <button class="btn btn-sm" onclick="App.go('products')">← Volver</button>
+      <div class="detail-grid" style="margin-top:1.5rem">
+        <img src="${p.img}" alt="${p.name}" style="width:100%;border:1px solid var(--border)">
+        <div>
+          <span style="background:var(--accent);color:#000;padding:2px 8px;font-size:.8rem;font-weight:600">${Store.catIcon(p.cat)} ${Store.catName(p.cat)}</span>
+          <h1 style="font-size:1.8rem;font-weight:800;margin-top:.5rem">${p.name}</h1>
+          <div class="price-big">${p.price}€</div>
+          <p style="color:var(--muted);margin-bottom:1.5rem;line-height:1.7">${p.desc}</p>
+          <button class="btn btn-primary btn-lg" onclick="Store.addCart(Store.product('${p.id}'));Store.notify('Añadido al carrito')">🛒 Añadir al carrito</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  cartHTML(){
+    const items=Store.cart;
+    if(items.length===0)return `<div class="container page"><div class="empty"><p style="font-size:2rem;margin-bottom:1rem">🛒</p><p>Tu carrito está vacío</p><button class="btn btn-primary" onclick="App.go('products')">Ver productos</button></div></div>`;
+    return `<div class="container page">
+      <div style="display:flex;justify-content:space-between;align-items:center"><h1>Carrito (${items.length})</h1><button class="btn btn-sm" onclick="Store.clearCart()">Vaciar</button></div>
+      ${items.map(i=>`
+        <div class="citem">
+          <img src="${i.img}" alt="${i.name}">
+          <div class="citem-info"><div class="citem-title">${i.name}</div><div class="citem-price">${i.price}€</div></div>
+          <div class="cqty"><button onclick="Store.qtyCart('${i.id}',-1)">-</button><span style="font-weight:700;width:30px;text-align:center">${i.qty}</span><button onclick="Store.qtyCart('${i.id}',1)">+</button></div>
+          <div style="font-weight:800;min-width:70px;text-align:right">${i.price*i.qty}€</div>
+          <button class="btn btn-sm" onclick="Store.removeCart('${i.id}')">✕</button>
+        </div>
+      `).join('')}
+      <div style="text-align:right;padding:1rem 0;font-size:1.3rem;font-weight:800">Total: <span style="color:var(--accent)">${Store.cartTotal()}€</span></div>
+      <div style="display:flex;gap:1rem;justify-content:flex-end">
+        <button class="btn" onclick="App.go('products')">← Seguir comprando</button>
+        ${Store.session?`<button class="btn btn-primary btn-lg" onclick="App.go('checkout')">Proceder al pago</button>`:`<button class="btn btn-primary btn-lg" onclick="App.go('login')">Inicia sesión</button>`}
+      </div>
+    </div>`;
+  },
+
+  checkoutHTML(){
+    if(!Store.session)return `<div class="container page"><div class=empty><p>Debes iniciar sesión</p><button class="btn btn-primary" onclick="App.go('login')">Entrar</button></div></div>`;
+    if(Store.cart.length===0)return `<div class="container page"><div class=empty><p>Carrito vacío</p><button class="btn btn-primary" onclick="App.go('products')">Ver productos</button></div></div>`;
+    const items=Store.cart;
+    return `<div class="container page" style="max-width:600px">
+      <h1>Checkout</h1>
+      <div class="card">
+        <h3 style="margin-bottom:.5rem">Resumen del pedido</h3>
+        ${items.map(i=>`<div style="display:flex;justify-content:space-between;padding:.3rem 0;font-size:.9rem"><span>${i.name} x${i.qty}</span><span style="font-weight:600">${i.price*i.qty}€</span></div>`).join('')}
+        <div style="border-top:1px solid var(--border);margin-top:.5rem;padding-top:.5rem;display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem"><span>Total</span><span style="color:var(--accent)">${Store.cartTotal()}€</span></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:1rem">Datos de entrega</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Pago en persona. Elige lugar, fecha y hora.</p>
+        <div class="form-group"><label class="label">Lugar *</label>
+          <select class="input" id="ch-location">
+            <option value="">Selecciona...</option>
+            ${Store.locations.map(l=>`<option value="${l}">${l}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group"><label class="label">Fecha *</label><input type="date" class="input" id="ch-date"></div>
+        <div class="form-group"><label class="label">Hora *</label><input type="time" class="input" id="ch-time"></div>
+        <div class="form-group"><label class="label">Teléfono *</label><input type="tel" class="input" id="ch-phone" placeholder="+34 600 00 00 00"></div>
+        <div class="form-group"><label class="label">Notas</label><textarea class="input" rows="3" id="ch-notes" placeholder="Opcional..."></textarea></div>
+        <button class="btn btn-primary btn-lg" style="width:100%" onclick="App.submitOrder()">Confirmar pedido (${Store.cartTotal()}€)</button>
+      </div>
+    </div>`;
+  },
+
+  submitOrder(){
+    const loc=document.getElementById('ch-location').value;
+    const date=document.getElementById('ch-date').value;
+    const time=document.getElementById('ch-time').value;
+    const phone=document.getElementById('ch-phone').value;
+    const notes=document.getElementById('ch-notes').value;
+    if(!loc||!date||!time||!phone){Store.alert('Completa todos los campos obligatorios');return}
+    const order={id:'ORD-'+Date.now(),userId:Store.session.id,userName:Store.session.name,userEmail:Store.session.email,items:Store.cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price})),total:Store.cartTotal(),location:loc,date,time,phone,notes,status:'pendiente',createdAt:new Date().toISOString()};
+    Store.orders=[order,...Store.orders];
+    Store.cart=[];
+    Store.notify('Pedido realizado con éxito! Te contactaremos.');
+    this.go('account');
+  },
+
+  loginHTML(){
+    return `<div class="auth-box">
+      <h1>Iniciar sesión</h1>
+      <div class="form-group"><label class="label">Email</label><input class="input" id="log-email" type="email" placeholder="tu@email.com"></div>
+      <div class="form-group"><label class="label">Contraseña</label><input class="input" id="log-pass" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-primary" onclick="App.submitLogin()">Entrar</button>
+      <div class="auth-footer">¿No tienes cuenta? <a href="#" onclick="App.go('register')">Regístrate</a></div>
+    </div>`;
+  },
+
+  submitLogin(){
+    const email=document.getElementById('log-email').value;
+    const pass=document.getElementById('log-pass').value;
+    const u=Store.users.find(x=>x.email===email&&x.pass===pass);
+    if(!u){Store.alert('Email o contraseña incorrectos');return}
+    if(!u.verified){Store.alert('Verifica tu cuenta primero');return}
+    Store.session={id:u.id,name:u.name,email:u.email,admin:u.admin};
+    Store.notify('Bienvenido, '+u.name+'!');
+    this.go('home');
+  },
+
+  registerHTML(){
+    return `<div class="auth-box">
+      <h1>Crear cuenta</h1>
+      <div class="form-group"><label class="label">Nombre</label><input class="input" id="reg-name" placeholder="Tu nombre"></div>
+      <div class="form-group"><label class="label">Email</label><input class="input" id="reg-email" type="email" placeholder="tu@email.com"></div>
+      <div class="form-group"><label class="label">Contraseña</label><input class="input" id="reg-pass" type="password" placeholder="Mínimo 6 caracteres"></div>
+      <button class="btn btn-primary" onclick="App.submitRegister()">Crear cuenta</button>
+      <div class="auth-footer">¿Ya tienes cuenta? <a href="#" onclick="App.go('login')">Inicia sesión</a></div>
+    </div>`;
+  },
+
+  submitRegister(){
+    const name=document.getElementById('reg-name').value;
+    const email=document.getElementById('reg-email').value;
+    const pass=document.getElementById('reg-pass').value;
+    if(!name||!email||!pass){Store.alert('Completa todos los campos');return}
+    if(pass.length<6){Store.alert('La contraseña debe tener al menos 6 caracteres');return}
+    if(Store.users.find(u=>u.email===email)){Store.alert('Ya existe una cuenta con este email');return}
+    const otp=String(Math.floor(100000+Math.random()*900000));
+    Store.users=[...Store.users,{id:'u'+Date.now(),name,email,pass,admin:false,verified:false,otp}];
+    this._otpEmail=email;
+    this._otpCode=['','','','','',''];
+    Store.notify('Tu código OTP: '+otp);
+    this.go('verify');
+  },
+
+  verifyHTML(){
+    return `<div class="auth-box">
+      <h1>Verificar cuenta</h1>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem">Código enviado a:</p>
+      <p style="text-align:center;font-weight:600;margin-bottom:1rem">${this._otpEmail}</p>
+      <div class="otp-box">
+        ${this._otpCode.map((d,i)=>`<input class="otp-inp" id="otp-${i}" type="text" maxlength="1" value="${d}" oninput="App.otpInput(${i},this.value)" onkeydown="App.otpKey(${i},event)" ${i===0?'autofocus':''}>`).join('')}
+      </div>
+      <button class="btn btn-primary" onclick="App.submitVerify()">Verificar</button>
+    </div>`;
+  },
+
+  otpInput(i,v){
+    if(v.length>1)return;
+    this._otpCode[i]=v;
+    document.getElementById('otp-'+i).value=v;
+    if(v&&i<5)document.getElementById('otp-'+(i+1)).focus();
+  },
+
+  otpKey(i,e){
+    if(e.key==='Backspace'&&!this._otpCode[i]&&i>0)document.getElementById('otp-'+(i-1)).focus();
+  },
+
+  submitVerify(){
+    const code=this._otpCode.join('');
+    if(code.length!==6){Store.alert('Introduce el código completo');return}
+    const user=Store.users.find(u=>u.email===this._otpEmail);
+    if(!user||user.otp!==code){Store.alert('Código incorrecto');return}
+    user.verified=true;
+    Store.users=[...Store.users];
+    Store.notify('Cuenta verificada! Ya puedes iniciar sesión');
+    this.go('login');
+  },
+
+  logout(){
+    Store.session=null;
+    Store.notify('Sesión cerrada');
+    this.go('home');
+  },
+
+  accountHTML(){
+    if(!Store.session)return `<div class="container page"><div class=empty><p>Inicia sesión para ver tu cuenta</p><button class="btn btn-primary" onclick="App.go('login')">Entrar</button></div></div>`;
+    const orders=Store.orders.filter(o=>o.userId===Store.session.id);
+    return `<div class="container page">
+      <h1>Mi cuenta</h1>
+      <div class="card">
+        <h3>${Store.session.name}</h3>
+        <p style="color:var(--muted)">${Store.session.email}</p>
+        ${Store.session.admin?'<p style="color:var(--accent);margin-top:.3rem">👑 Administrador</p>':''}
+      </div>
+      <h2 style="font-size:1.2rem;margin-bottom:1rem">📦 Mis pedidos</h2>
+      ${orders.length===0?`<div class=empty><p>No tienes pedidos aún</p><button class="btn btn-primary" onclick="App.go('products')">Ver productos</button></div>`:
+      `<table><thead><tr><th>Pedido</th><th>Productos</th><th>Total</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
+        ${orders.map(o=>`<tr><td style="font-weight:600;font-size:.75rem">${o.id}</td><td style="font-size:.8rem">${o.items.map(i=>i.name+' x'+i.qty).join(', ')}</td><td style="color:var(--accent);font-weight:700">${o.total}€</td><td style="font-size:.8rem">${new Date(o.createdAt).toLocaleDateString()}</td><td><span style="color:${o.status==='pendiente'?'var(--accent)':o.status==='completado'?'var(--success)':'var(--danger)'};font-weight:600">${o.status}</span></td></tr>`).join('')}
+      </tbody></table>`}
+    </div>`;
+  },
+
+  adminHTML(){
+    if(!Store.session||!Store.session.admin)return `<div class="container page"><div class=empty><p>No tienes acceso</p><button class="btn btn-primary" onclick="App.go('home')">Inicio</button></div></div>`;
+    return `<div class="container">
+      <div class="page"><h1>Panel de Administración</h1></div>
+      <div class="admin-layout">
+        <div class="admin-sidebar">
+          <button class="${this._adminTab==='products'?'active':''}" onclick="App._adminTab='products';App.renderPage()">📦 Productos</button>
+          <button class="${this._adminTab=='categories'?'active':''}" onclick="App._adminTab='categories';App.renderPage()">🏷️ Categorías</button>
+          <button class="${this._adminTab=='orders'?'active':''}" onclick="App._adminTab='orders';App.renderPage()">📋 Pedidos</button>
+        </div>
+        <div>${this._adminTab==='products'?this.adminProductsHTML():this._adminTab==='categories'?this.adminCategoriesHTML():this.adminOrdersHTML()}</div>
+      </div>
+      ${this._adminModal?this.adminModalHTML():''}
+    </div>`;
+  },
+
+  adminProductsHTML(){
+    return `<div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h2 style="font-size:1.2rem">Productos (${Store.products.length})</h2>
+        <button class="btn btn-primary btn-sm" onclick="App._adminProductForm={name:'',cat:'c1',price:'',desc:'',img:''};App._adminModal='product';App.renderPage()">+ Nuevo</button>
+      </div>
+      <table><thead><tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th style="width:80px">Acciones</th></tr></thead><tbody>
+        ${Store.products.map(p=>`<tr><td>${p.name}</td><td>${Store.catName(p.cat)}</td><td style="color:var(--accent);font-weight:700">${p.price}€</td><td><button class="btn btn-sm" onclick="App.adminEditProduct('${p.id}')">✏️</button> <button class="btn btn-sm" style="color:var(--danger)" onclick="App.adminDeleteProduct('${p.id}')">🗑️</button></td></tr>`).join('')}
+      </tbody></table>
+    </div>`;
+  },
+
+  adminEditProduct(id){
+    const p=Store.product(id);
+    this._adminProductForm={name:p.name,cat:p.cat,price:String(p.price),desc:p.desc,img:p.img,id:p.id};
+    this._adminModal='product';
+    this.renderPage();
+  },
+
+  adminDeleteProduct(id){
+    if(!confirm('Eliminar producto?'))return;
+    Store.products=Store.products.filter(p=>p.id!==id);
+    Store.notify('Producto eliminado');
+    this.renderPage();
+  },
+
+  adminCategoriesHTML(){
+    return `<div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h2 style="font-size:1.2rem">Categorías (${Store.categories.length})</h2>
+        <button class="btn btn-primary btn-sm" onclick="App._adminCatForm={name:'',icon:''};App._adminModal='category';App.renderPage()">+ Nueva</button>
+      </div>
+      <table><thead><tr><th>Icono</th><th>Nombre</th><th style="width:80px">Acciones</th></tr></thead><tbody>
+        ${Store.categories.map(c=>`<tr><td style="font-size:1.5rem">${c.icon}</td><td>${c.name}</td><td><button class="btn btn-sm" onclick="App.adminEditCategory('${c.id}')">✏️</button> <button class="btn btn-sm" style="color:var(--danger)" onclick="App.adminDeleteCategory('${c.id}')">🗑️</button></td></tr>`).join('')}
+      </tbody></table>
+    </div>`;
+  },
+
+  adminEditCategory(id){
+    const c=Store.categories.find(x=>x.id===id);
+    this._adminCatForm={name:c.name,icon:c.icon,id:c.id};
+    this._adminModal='category';
+    this.renderPage();
+  },
+
+  adminDeleteCategory(id){
+    if(!confirm('Eliminar categoría?'))return;
+    Store.categories=Store.categories.filter(c=>c.id!==id);
+    Store.notify('Categoría eliminada');
+    this.renderPage();
+  },
+
+  adminOrdersHTML(){
+    const orders=Store.orders;
+    return `<div>
+      <h2 style="font-size:1.2rem;margin-bottom:1rem">Pedidos (${orders.length})</h2>
+      ${orders.length===0?'<div class=empty><p>No hay pedidos</p></div>':
+      `<table><thead><tr><th>Pedido</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Entrega</th><th>Estado</th></tr></thead><tbody>
+        ${orders.map(o=>`<tr><td style="font-size:.75rem;font-weight:600">${o.id}</td><td><div>${o.userName}</div><div style="font-size:.75rem;color:var(--muted)">${o.userEmail}<br>📞 ${o.phone}</div></td><td style="font-size:.8rem">${o.items.map(i=>i.name+' x'+i.qty).join(', ')}</td><td style="color:var(--accent);font-weight:700">${o.total}€</td><td style="font-size:.8rem"><div>${o.location}</div><div>${o.date} ${o.time}</div></td><td><select class="input" style="padding:.3rem;font-size:.8rem" onchange="App.adminUpdateOrder('${o.id}',this.value)">
+          <option value="pendiente" ${o.status==='pendiente'?'selected':''}>Pendiente</option>
+          <option value="completado" ${o.status==='completado'?'selected':''}>Completado</option>
+          <option value="cancelado" ${o.status==='cancelado'?'selected':''}>Cancelado</option>
+        </select></td></tr>`).join('')}
+      </tbody></table>`}
+    </div>`;
+  },
+
+  adminUpdateOrder(id,status){
+    Store.orders=Store.orders.map(o=>o.id===id?{...o,status}:o);
+    Store.notify('Estado actualizado');
+    this.renderPage();
+  },
+
+  adminModalHTML(){
+    if(this._adminModal==='product'){
+      const f=this._adminProductForm;
+      return `<div class="modal-overlay" onclick="App._adminModal=null;App.renderPage()"><div class="modal" onclick="event.stopPropagation()">
+        <h2>${f.id?'Editar':'Nuevo'} producto</h2>
+        <div class="form-group"><label class="label">Nombre</label><input class="input" id="ap-name" value="${f.name}"></div>
+        <div class="form-group"><label class="label">Categoría</label><select class="input" id="ap-cat">${Store.categories.map(c=>`<option value="${c.id}" ${c.id===f.cat?'selected':''}>${c.name}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="label">Precio (€)</label><input type="number" class="input" id="ap-price" value="${f.price}"></div>
+        <div class="form-group"><label class="label">Descripción</label><textarea class="input" rows="2" id="ap-desc">${f.desc}</textarea></div>
+        <div class="form-group"><label class="label">URL imagen</label><input class="input" id="ap-img" value="${f.img}" placeholder="https://..."></div>
+        <div style="display:flex;gap:.5rem"><button class="btn btn-primary" onclick="App.adminSaveProduct()">Guardar</button><button class="btn" onclick="App._adminModal=null;App.renderPage()">Cancelar</button></div>
+      </div></div>`;
+    }
+    if(this._adminModal==='category'){
+      const f=this._adminCatForm;
+      return `<div class="modal-overlay" onclick="App._adminModal=null;App.renderPage()"><div class="modal" onclick="event.stopPropagation()">
+        <h2>${f.id?'Editar':'Nueva'} categoría</h2>
+        <div class="form-group"><label class="label">Nombre</label><input class="input" id="ac-name" value="${f.name}"></div>
+        <div class="form-group"><label class="label">Icono (emoji)</label><input class="input" id="ac-icon" value="${f.icon}" placeholder="🎮"></div>
+        <div style="display:flex;gap:.5rem"><button class="btn btn-primary" onclick="App.adminSaveCategory()">Guardar</button><button class="btn" onclick="App._adminModal=null;App.renderPage()">Cancelar</button></div>
+      </div></div>`;
+    }
+    return '';
+  },
+
+  adminSaveProduct(){
+    const f=this._adminProductForm;
+    const name=document.getElementById('ap-name').value;
+    const cat=document.getElementById('ap-cat').value;
+    const price=Number(document.getElementById('ap-price').value);
+    const desc=document.getElementById('ap-desc').value;
+    const img=document.getElementById('ap-img').value||'https://placehold.co/400x300/1a1a1a/CCFF00?text=📦+Producto';
+    if(!name||!price){Store.alert('Nombre y precio obligatorios');return}
+    if(f.id){
+      Store.products=Store.products.map(p=>p.id===f.id?{...p,name,cat,price,desc,img}:p);
+      Store.notify('Producto actualizado');
+    }else{
+      Store.products=[...Store.products,{id:'p'+Date.now(),name,cat,price,desc,img}];
+      Store.notify('Producto creado');
+    }
+    this._adminModal=null;
+    this.renderPage();
+  },
+
+  adminSaveCategory(){
+    const f=this._adminCatForm;
+    const name=document.getElementById('ac-name').value;
+    const icon=document.getElementById('ac-icon').value;
+    if(!name||!icon){Store.alert('Nombre e icono obligatorios');return}
+    if(f.id){
+      Store.categories=Store.categories.map(c=>c.id===f.id?{...c,name,icon}:c);
+      Store.notify('Categoría actualizada');
+    }else{
+      Store.categories=[...Store.categories,{id:'c'+Date.now(),name,icon}];
+      Store.notify('Categoría creada');
+    }
+    this._adminModal=null;
+    this.renderPage();
+  }
+};
+
+// ===================== START =====================
+App.init();
+</script>
+</body>
+</html>
